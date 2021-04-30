@@ -17,7 +17,7 @@ export default class CardServiceImpl implements CardService {
         return (await axios.get('/card/search', {params: cardSearch})).data;
     }
     async deleteCard(id: string) {
-        await axios.put('/card/delete', { params: { id: id} });
+        await axios.get('/card/delete', { params: { id: id} });
     }
 
 }

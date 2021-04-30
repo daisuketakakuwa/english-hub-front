@@ -95,9 +95,14 @@ export default class Register extends Vue {
 
   async register() {
     await this.cardService.registerCard(
-      new Card(this.inputTitle, this.getActiveTag(), this.inputContent)
+      new Card("", this.inputTitle, this.getActiveTag(), this.inputContent)
     );
     this.showDialog = true;
+    this.inputTitle = "";
+    this.inputNewTag = "";
+    this.inputExistTag = "";
+    this.inputContent = "";
+    this.tags = await this.cardService.getCardTags();
   }
 
   getActiveTag() {

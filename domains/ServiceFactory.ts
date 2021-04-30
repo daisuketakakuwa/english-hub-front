@@ -16,8 +16,8 @@ export default class ServiceFactory {
         return this.cardService;
     }
 
-  private static async isStub() {
-      return new Config().getStub();
-  }    
+    private static async isStub() {
+        return new Config().getStub();
+    }    
 
 }

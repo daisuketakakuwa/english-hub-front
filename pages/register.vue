@@ -2,15 +2,31 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="3">
-        <v-select
-          v-model="inputTag"
+        <v-checkbox v-model="createNewTag" label="新しいタグを作成する" />
+      </v-col>
+      <v-col cols="3" v-if="createNewTag">
+        <v-text-field
+          v-model="inputNewTag"
+          :disabled="!createNewTag"
           @input="checkInput"
           :items="tags"
-          label="Tag"
+          label="新しいタグを作成する"
           outlined
         />
       </v-col>
-      <v-col cols="7">
+      <v-col cols="3" v-else>
+        <v-select
+          v-model="inputExistTag"
+          :disabled="createNewTag"
+          @input="checkInput"
+          :items="tags"
+          label="既存タグを選ぶ"
+          outlined
+        />
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="10">
         <v-text-field
           v-model="inputTitle"
           @input="checkInput"
@@ -26,7 +42,7 @@
           @input="checkInput"
           label="Content"
           outlined
-          rows="13"
+          rows="10"
         />
       </v-col>
     </v-row>
@@ -46,8 +62,10 @@ import ServiceFactory from "@/domains/ServiceFactory";
 export default class Register extends Vue {
   cardService!: CardService;
 
+  createNewTag: boolean = false;
   showBtn: boolean = false;
-  inputTag: string = "";
+  inputNewTag: string = "";
+  inputExistTag: string = "";
   inputTitle: string = "";
   inputContent: string = "";
   tags: String[] = [];
@@ -58,8 +76,14 @@ export default class Register extends Vue {
   }
 
   checkInput() {
-    this.showBtn = this.showBtn =
-      !!this.inputTag && !!this.inputTitle && !!this.inputContent;
+    let inputTag = "";
+    if (this.createNewTag) {
+      inputTag = this.inputNewTag;
+    } else {
+      inputTag = this.inputExistTag;
+    }
+
+    this.showBtn = !!inputTag && !!this.inputTitle && !!this.inputContent;
   }
 }
 </script>

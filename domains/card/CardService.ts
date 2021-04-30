@@ -3,6 +3,9 @@ import CardSearch from '@/domains/card/CardSearch';
 
 export default interface CardService {
     getCardTags: () => Promise<string[]>;
-    searchCard: (cardSearch: CardSearch) => Promise<Card[]>;
     registerCard: (card: Card) => void;
+    updateCard: (card: Card) => void;
+    searchCard: (cardSearch: CardSearch) => Promise<Card[]>;
+    deleteCard: (id: string) => void;
+
 }

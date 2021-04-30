@@ -20,18 +20,48 @@
       <v-col cols="10">
         <v-data-table :headers="headers" :items="cards" hide-default-footer>
           <template #[`item`]="{ item }">
-            <tr @click="showDetail">
+            <tr @click="showDetailDialog">
               <td>#{{ item.tag }}</td>
               <td>{{ item.title }}</td>
             </tr>
             <app-dialog
-              :dialog.sync="showDialog"
+              :dialog.sync="detailDialog"
               :max-width="new String(900)"
-              :hide-cancel="true"
-              ok-title="閉じる"
+              ok-title="編集"
+              @ok="showEditDialog(item)"
+              cancel-title="閉じる"
               :header-title="item.title"
             >
               <span v-html="item.content"></span>
+            </app-dialog>
+            <edit-dialog
+              :dialog.sync="editDialog"
+              :max-width="new String(900)"
+              :input-title.sync="updateTitle"
+              :input-content.sync="updateContent"
+              header-title="編集画面"
+              @update="showUpdateConfirmDialog"
+              @deletes="showDeleteConfirmDialog"
+            />
+            <app-dialog
+              :dialog.sync="updateConfirmDialog"
+              :max-width="new String(500)"
+              ok-title="OK"
+              @ok="updateCard(item)"
+              cancel-title="キャンセル"
+              header-title="更新確認"
+            >
+              本カードを更新します。
+            </app-dialog>
+            <app-dialog
+              :dialog.sync="deleteConfirmDialog"
+              :max-width="new String(500)"
+              ok-title="OK"
+              @ok="deleteCard(item)"
+              cancel-title="キャンセル"
+              header-title="削除確認"
+            >
+              本カードを削除します。
             </app-dialog>
           </template>
         </v-data-table>
@@ -50,11 +80,19 @@ import CardSearch from "@/domains/card/CardSearch";
 export default class Search extends Vue {
   cardService!: CardService;
 
-  tags: String[] = [];
   searchTag = "";
   searchWord = "";
+
+  updateTitle = "";
+  updateContent = "";
+
+  tags: String[] = [];
   cards: Card[] = [];
-  showDialog = false;
+
+  detailDialog = false;
+  editDialog = false;
+  updateConfirmDialog = false;
+  deleteConfirmDialog = false;
 
   headers = [
     { text: "TAG", value: "tag", width: "20%" },
@@ -72,8 +110,32 @@ export default class Search extends Vue {
     );
   }
 
-  showDetail() {
-    this.showDialog = true;
+  async updateCard(card: Card) {
+    await this.cardService.updateCard(
+      new Card(card.id, this.updateTitle, card.tag, this.updateContent)
+    );
+    await this.searchCard();
+  }
+
+  async deleteCard(card: Card) {
+    await this.cardService.deleteCard(card.id);
+    await this.searchCard();
+  }
+
+  showDetailDialog() {
+    this.detailDialog = true;
+  }
+  showEditDialog(card: Card) {
+    this.updateTitle = card.title;
+    this.updateContent = card.content.replaceAll("<br>", "\n");
+    this.detailDialog = false;
+    this.editDialog = true;
+  }
+  showUpdateConfirmDialog() {
+    this.updateConfirmDialog = true;
+  }
+  showDeleteConfirmDialog() {
+    this.deleteConfirmDialog = true;
   }
 }
 </script>

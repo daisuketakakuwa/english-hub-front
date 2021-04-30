@@ -7,10 +7,11 @@ export default class CardServiceStub implements CardService {
     async getCardTags(): Promise<string[]> {
         return (await axios.get('/data/card/tags.json')).data;
     }
+    async registerCard(card: Card) {}
+    async updateCard(card: Card) {}
     async searchCard(cardSearch: CardSearch): Promise<Card[]> {
         return (await axios.get('/data/card/cards.json')).data;
     }
-    async registerCard(card: Card) {
-        alert(card.content);
-    }
+    async deleteCard(id: string) {}
+
 }

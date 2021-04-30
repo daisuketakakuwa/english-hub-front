@@ -27,7 +27,7 @@
             </tr>
             <app-dialog
               :dialog.sync="showDialog"
-              :max-width="900"
+              :max-width="new String(900)"
               :hide-cancel="true"
               ok-title="閉じる"
               :header-title="item.title"
@@ -64,7 +64,7 @@ export default class Search extends Vue {
 
   async fetch() {
     this.cardService = await ServiceFactory.getCardService();
-    this.tags = await this.cardService.getCardTags();
+    this.tags = ["TAG1", "TAG2", "TAG3", "TAG4", "TAG5"];
   }
 
   async searchCard() {

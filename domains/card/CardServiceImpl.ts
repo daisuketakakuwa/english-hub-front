@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '@/domains/AxiosFactory';
 import Card from '@/domains/card/Card';
 import CardService from '@/domains/card/CardService';
 
@@ -8,5 +8,8 @@ export default class CardServiceImpl implements CardService {
     }
     async searchCard(): Promise<Card[]> {
         return (await axios.get('/data/card/cards.json')).data;
+    }
+    async registerCard(card: Card) {
+        await axios.put('/card/register', card);
     }
 }

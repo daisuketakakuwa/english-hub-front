@@ -48,13 +48,25 @@
     </v-row>
     <v-row justify="end">
       <v-col cols="2">
-        <v-btn x-large color="primary" :disabled="!showBtn">登録</v-btn>
+        <v-btn x-large color="primary" :disabled="!showBtn" @click="register"
+          >登録</v-btn
+        >
       </v-col>
     </v-row>
+    <app-dialog
+      :dialog.sync="showDialog"
+      :max-width="new String(750)"
+      :hide-cancel="true"
+      ok-title="閉じる"
+      header-title="処理結果"
+    >
+      登録完了しました。
+    </app-dialog>
   </v-container>
 </template>
 <script lang="ts">
 import { Vue, Component } from "nuxt-property-decorator";
+import Card from "@/domains/card/Card";
 import CardService from "@/domains/card/CardService";
 import ServiceFactory from "@/domains/ServiceFactory";
 
@@ -63,6 +75,7 @@ export default class Register extends Vue {
   cardService!: CardService;
 
   createNewTag: boolean = false;
+  showDialog: boolean = false;
   showBtn: boolean = false;
   inputNewTag: string = "";
   inputExistTag: string = "";
@@ -72,18 +85,27 @@ export default class Register extends Vue {
 
   async fetch() {
     this.cardService = await ServiceFactory.getCardService();
-    this.tags = await this.cardService.getCardTags();
+    this.tags = ["TAG1", "TAG2", "TAG3", "TAG4", "TAG5"];
   }
 
   checkInput() {
-    let inputTag = "";
-    if (this.createNewTag) {
-      inputTag = this.inputNewTag;
-    } else {
-      inputTag = this.inputExistTag;
-    }
+    this.showBtn =
+      !!this.getActiveTag() && !!this.inputTitle && !!this.inputContent;
+  }
 
-    this.showBtn = !!inputTag && !!this.inputTitle && !!this.inputContent;
+  async register() {
+    await this.cardService.registerCard(
+      new Card(this.inputTitle, this.getActiveTag(), this.inputContent)
+    );
+    this.showDialog = true;
+  }
+
+  getActiveTag() {
+    if (this.createNewTag) {
+      return this.inputNewTag;
+    } else {
+      return this.inputExistTag;
+    }
   }
 }
 </script>

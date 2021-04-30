@@ -81,11 +81,11 @@ export default class Register extends Vue {
   inputExistTag: string = "";
   inputTitle: string = "";
   inputContent: string = "";
-  tags: String[] = [];
+  tags: any = [];
 
   async fetch() {
     this.cardService = await ServiceFactory.getCardService();
-    this.tags = ["TAG1", "TAG2", "TAG3", "TAG4", "TAG5"];
+    this.tags = await this.cardService.getCardTags();
   }
 
   checkInput() {

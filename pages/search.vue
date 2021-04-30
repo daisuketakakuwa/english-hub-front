@@ -21,7 +21,6 @@
         <v-data-table :headers="headers" :items="cards" hide-default-footer>
           <template #[`item`]="{ item }">
             <tr @click="showDetail">
-              <td>{{ item.insertDate }}</td>
               <td>#{{ item.tag }}</td>
               <td>{{ item.title }}</td>
             </tr>
@@ -45,6 +44,7 @@ import { Vue, Component } from "nuxt-property-decorator";
 import Card from "@/domains/card/Card";
 import CardService from "@/domains/card/CardService";
 import ServiceFactory from "@/domains/ServiceFactory";
+import CardSearch from "@/domains/card/CardSearch";
 
 @Component
 export default class Search extends Vue {
@@ -57,18 +57,19 @@ export default class Search extends Vue {
   showDialog = false;
 
   headers = [
-    { text: "", value: "", width: "10%" },
     { text: "TAG", value: "tag", width: "20%" },
     { text: "TITLE", value: "color", width: "50%" }
   ];
 
   async fetch() {
     this.cardService = await ServiceFactory.getCardService();
-    this.tags = ["TAG1", "TAG2", "TAG3", "TAG4", "TAG5"];
+    this.tags = await this.cardService.getCardTags();
   }
 
   async searchCard() {
-    this.cards = await this.cardService.searchCard();
+    this.cards = await this.cardService.searchCard(
+      new CardSearch(this.searchTag, this.searchWord)
+    );
   }
 
   showDetail() {

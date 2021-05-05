@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="loggedIn">
     <v-row justify="center">
       <v-col>
         <v-tabs>
@@ -15,17 +15,28 @@
   </v-container>
 </template>
 <script lang="ts">
-import { Vue, Component } from "nuxt-property-decorator";
+import { Component, Vue, Watch } from "nuxt-property-decorator";
 
 @Component
 export default class NavigateMenu extends Vue {
+  loggedIn = false;
+
   items = [
-    { title: "ホーム", to: "/" },
+    { title: "ホーム", to: "/auth/home" },
     {
       title: "新規登録",
-      to: "/register"
+      to: "/auth/register"
     },
-    { title: "検索", to: "/search" }
+    { title: "検索", to: "/auth/search" }
   ];
+
+  async fetch() {
+    this.loggedIn = this.$route.path.startsWith("/auth/");
+  }
+
+  @Watch("$route")
+  changedRoute() {
+    this.loggedIn = this.$route.path.startsWith("/auth/");
+  }
 }
 </script>
